@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Author;
+use App\Models\Book;
+use App\Models\Genre;
+use App\Models\Publisher;
 use GuzzleHttp\Client;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class BookSeeder extends Seeder
 {
@@ -23,25 +25,45 @@ class BookSeeder extends Seeder
         if ($books) {
             $books = json_decode($books, true);
 
+            $authorCollection = collect();
+            $genreCollection = collect();
+            $publiserCollection = collect();
+
             foreach ($books['data'] as $book) {
-                // Create a book table
-                // Create a genre table
-                // Create a author table
-                // Create a publisers table
+                if (!isset($authorCollection[$book['author']])) {
+                    $author = Author::create([
+                        'name' => $book['author']
+                    ]);
 
-                // Book::create([]);
+                    $authorCollection[$book['author']] = $author->id;
+                }
 
-                
+                if (!isset($genreCollection[$book['genre']])) {
+                    $genre = Genre::create([
+                        'name' => $book['genre']
+                    ]);
 
-                $author = new Author()
-                $author->save();
+                    $genreCollection[$book['genre']] = $genre->id;
+                }
 
-                $author->id;
+                if (!isset($publiserCollection[$book['publisher']])) {
+                    $publisher = Publisher::create([
+                        'name' => $book['publisher']
+                    ]);
 
-                $book['author'];
-                $book['publisher'];
+                    $publiserCollection[$book['publisher']] = $publisher->id;
+                }
 
-                Log::debug($book);
+                Book::create([
+                    'title' => $book['title'],
+                    'author_id' => isset($authorCollection[$book['author']]) ? $authorCollection[$book['author']] : null,
+                    'genre_id' => isset($genreCollection[$book['genre']]) ? $genreCollection[$book['genre']] : null,
+                    'description' => $book['description'],
+                    'isbn' => $book['isbn'],
+                    'image' => $book['image'],
+                    'published' => $book['published'],
+                    'publisher_id' => isset($publiserCollection[$book['publisher']]) ? $publiserCollection[$book['publisher']] : null
+                ]);
             }
         }
     }

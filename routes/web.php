@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +16,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Auth routes
+Auth::routes();
+
+// Client routes
 Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+// Admin routes
+Route::controller(BookController::class)->prefix('books')->group(function () {
+    Route::get('/', 'index');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('create', 'create');
+    Route::get('datatable', 'getBooksForDatatable');
+    Route::get('{book}/edit', 'edit');
+
+    Route::post('/{book}', 'update');
+    Route::post('/', 'store');
+
+    Route::delete('/{book}', 'destroy');
+});

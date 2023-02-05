@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('author_id')->nullable()->constrained('author')->onDelete('set null');
-            $table->foreignId('genre_id')->nullable()->constrained('genre')->onDelete('set null');
+            $table->foreignId('author_id')->nullable()->constrained('authors')->onDelete('set null');
+            $table->foreignId('genre_id')->nullable()->constrained('genres')->onDelete('set null');
             $table->text('description')->nullable();
             $table->string('isbn');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->date('published')->nullable();
-            $table->foreignId('publisher_id')->nullable()->constrained('publisher')->onDelete('set null');
+            $table->foreignId('publisher_id')->nullable()->constrained('publishers')->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -1,80 +1,73 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('layouts.partials.htmlHeader')
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <body>
+        <div id="app">
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+            @include('layouts.partials.mainHeader')
 
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-</head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <main class="py-4">
+                <toaster></toaster>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+                @yield('content')
+            </main>
 
-                    </ul>
+            @include('layouts.partials.alertModal')
+        </div>
+    </body>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
+    <!-- Datatable -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    
+    <!-- Inputmask -->
+    <script type='text/javascript' src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
+    <script>
+        BASE_URL = '{{url("/")}}';
+        TOAST_SUCCESS = 1;
+        TOAST_ERROR = 2;
+        TOAST_WARNING = 3;
+        TOAST_INFO = 4;
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
-</body>
+        TOAST_DEFAUT_SUCCESS_HEADER = "Success";
+
+        TOAST_DEFAUT_ERROR_HEADER = "Error";
+        TOAST_DEFAUT_ERROR_BODY = "Something went wrong. Please try again.";
+
+        $(document).on('click', '.delete-book-btn', function() {
+            const id = $(this).data('id');
+
+            AlertModal(modalContext => {
+                modalContext.hide();
+
+                axios.delete(`${BASE_URL}/books/${id}`)
+                    .then(res => {
+                        CustomEvent.fire('refresh-book-list');
+                        showToast(TOAST_DEFAUT_SUCCESS_HEADER, "Book has been deleted successfully.",TOAST_SUCCESS);
+                    })
+                    .catch(err => showToast(TOAST_DEFAUT_ERROR_HEADER, TOAST_DEFAUT_ERROR_BODY, TOAST_ERROR));
+            });
+        });
+
+        const AlertModal = (func) => {
+            const context = new bootstrap.Modal('#alertModal', {
+                backdrop: 'static',
+                focus: true,
+                keyboard: false,
+            });
+
+            context.show();
+
+            $("#positive-btn").off('click');
+            $("#positive-btn").on('click', () => func(context));
+        };
+    </script>
 </html>
