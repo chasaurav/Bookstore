@@ -26,8 +26,10 @@ window.bootstrap = bootstrap;
 import Toaster from './components/Toaster.vue';
 import BookList from './components/BookList.vue';
 import CreateEditBook from './components/CreateEditBook.vue';
+import BookCard from './components/BookCard.vue';
 
 app.component('toaster', Toaster);
 app.component('book-list', BookList);
 app.component('create-edit-book', CreateEditBook);
+app.component('book-card', BookCard);
 app.mount('#app');

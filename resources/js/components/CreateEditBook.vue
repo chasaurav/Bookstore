@@ -124,7 +124,7 @@
 
     export default {
         props: ["book", "authors", "genres", "publishers"],
-        components: {"book-details": BookDetails},
+        components: { "book-details": BookDetails },
         data() {
             return {
                 baseUrl: BASE_URL,

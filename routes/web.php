@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\StoreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +20,7 @@ use App\Http\Controllers\HomeController;
 Auth::routes();
 
 // Client routes
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [StoreController::class, 'index'])->name('home');
 
 // Admin routes
 Route::controller(BookController::class)->prefix('books')->group(function () {
@@ -32,8 +30,8 @@ Route::controller(BookController::class)->prefix('books')->group(function () {
     Route::get('datatable', 'getBooksForDatatable');
     Route::get('{book}/edit', 'edit');
 
-    Route::post('/{book}', 'update');
+    Route::post('/{book}/update', 'update');
     Route::post('/', 'store');
 
-    Route::delete('/{book}', 'destroy');
+    Route::delete('/{book}/delete', 'destroy');
 });

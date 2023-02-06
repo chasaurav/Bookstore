@@ -13,6 +13,10 @@
                         <li class="nav-item"> <a class="nav-link" href="{{ route('register') }}">Register</a> </li>
                     @endif
                 @else
+                    @if (!Request::is('books'))
+                    <li class="nav-item"> <a href="{{ url('/books') }}" class="nav-link">Home</a> </li>
+                    @endif
+
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>{{ Auth::user()->name }}</a>
 
