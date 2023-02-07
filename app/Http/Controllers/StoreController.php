@@ -9,8 +9,12 @@ class StoreController extends Controller
 {
     public function index()
     {
-        $books = Book::limit(5)->get();
+        return view('landing');
+    }
 
-        return view('landing')->with(compact('books'));
+    public function searchBooks(Request $request)
+    {
+        $books = Book::search($request->get('q'))->paginate(8);
+        return response()->json($books, 200);
     }
 }

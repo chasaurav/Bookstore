@@ -20,7 +20,10 @@ use App\Http\Controllers\StoreController;
 Auth::routes();
 
 // Client routes
-Route::get('/', [StoreController::class, 'index'])->name('home');
+Route::controller(StoreController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/search', 'searchBooks');
+});
 
 // Admin routes
 Route::controller(BookController::class)->prefix('books')->group(function () {
