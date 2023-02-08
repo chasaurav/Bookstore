@@ -4,7 +4,7 @@
     <p v-if="paginatedBookData.data && paginatedBookData.data.length == 0" class="mt-3">No Books Found! Try searching again.</p>
 
     <div v-if="paginatedBookData.data && paginatedBookData.data.length" class="mt-4">
-        <nav>
+        <nav v-if="paginatedBookData.last_page > 1">
             <ul class="pagination pagination-lg justify-content-center">
                 <li v-for="(link, i) in paginatedBookData.links" :key="i" class="page-item" :class="!link.url ? 'disabled' : ''">
                     <a class="page-link" :class="link.active ? 'active' : ''" @click="searchBooks(link.url)" href="#" v-html="link.label"></a>
