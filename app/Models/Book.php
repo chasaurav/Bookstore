@@ -48,21 +48,21 @@ class Book extends Model
     protected function authorName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->author->name
+            get: fn () => $this->author?->name
         );
     }
 
     protected function genreName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->genre->name
+            get: fn () => $this->genre?->name
         );
     }
 
     protected function publisherName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->publisher->name
+            get: fn () => $this->publisher?->name
         );
     }
 

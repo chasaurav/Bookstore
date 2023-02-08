@@ -6,22 +6,24 @@
         </div>
 
         <div class="card-body">
-            <table ref="booklistDatatable" class="table table-striped table-borderless" style="padding: 10px 6px;">
-                <thead class="bg-dark text-white">
-                    <tr>
-                        <th class="dont-show">id</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Genre</th>
-                        <th>Description</th>
-                        <th>ISBN</th>
-                        <th>Publisher</th>
-                        <th>Published On</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive">
+                <table ref="booklistDatatable" class="table table-striped table-borderless" style="padding: 10px 6px;">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th class="dont-show">id</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Description</th>
+                            <th>ISBN</th>
+                            <th>Publisher</th>
+                            <th>Published On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>

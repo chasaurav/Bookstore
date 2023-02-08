@@ -2,7 +2,7 @@
     <div class="card mt-4">
         <div class="card-body">
             <div class="d-flex justify-content-center align-items-center gap-3">
-                <img :src="book.image" :alt="book.image" class="rounded border-2" style="width: 18%" />
+                <img v-if="book.image" :src="book.image" :alt="book.image" class="rounded border-2" style="width: 18%" />
                 <div>
                     <h2><strong>{{book.title}}</strong></h2>
                     <p>

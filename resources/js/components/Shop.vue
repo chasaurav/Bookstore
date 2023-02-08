@@ -1,5 +1,41 @@
 <template>
     <input type="text" class="form-control" @input="debounceInput" placeholder="Search Books..." />
+    <div class="col-12 filter-box">
+        <div class="row form-group">
+            <div class="col-3">
+                <label>Author</label>
+                <select ref="author" class="form-select" v-model="filters.authorId">
+                    <option value="">Select</option>
+                    <option v-for="(author, i) in authors" :key="i" :value="author.id">{{author.name}}</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <label>Genre</label>
+                <select ref="genre" class="form-select" v-model="filters.genreId">
+                    <option value="">Select</option>
+                    <option v-for="(genre, i) in genres" :key="i" :value="genre.id">{{genre.name}}</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <label>ISBN</label>
+                <select ref="isbn" class="form-select" v-model="filters.isbn">
+                    <option value="">Select</option>
+                    <option v-for="(isbn, i) in isbns" :key="i" :value="isbn.isbn">{{isbn.isbn}}</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <label>Date From</label>
+                <input type="date" class="form-control" v-model="filters.dateFrom" />
+            </div>
+            <div class="col-2">
+                <label>Date To</label>
+                <input type="date" class="form-control" v-model="filters.dateTo" />
+            </div>
+            <div class="col-1 d-flex align-items-end">
+                <button type="btn" class="btn btn-sm btn-link" @click="clearFilters">Clear All</button>
+            </div>
+        </div>
+    </div>
 
     <p v-if="paginatedBookData.data && paginatedBookData.data.length == 0" class="mt-3">No Books Found! Try searching again.</p>
 
@@ -41,6 +77,12 @@
     justify-content: center;
     margin: 20px;
 }
+.filter-box {
+    background: #eee;
+    padding: 10px;
+    margin: 15px auto;
+    border-radius: 6px;
+}
 </style>
 
 <script>
@@ -48,6 +90,7 @@
     import BookCard from './BookCard.vue';
 
     export default {
+        props: ["authors", "genres", "isbns"],
         components: {
             "book-card": BookCard
         },
@@ -58,6 +101,13 @@
                 searchParam: '',
                 paginatedBookData: {},
                 selectedBook: null,
+                filters: {
+                    authorId: '',
+                    genreId: '',
+                    isbn: '',
+                    dateFrom: '',
+                    dateTo: '',
+                }
             };
         },
         methods: {
@@ -67,8 +117,9 @@
             }, 500),
             searchBooks(url, searchParam) {
                 this.appiInProgress = true;
+                const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${searchParam}&page=1`);
 
-                axios.get(url || `${BASE_URL}/search?query=${searchParam}&page=1`)
+                axios.get(generatedUrl)
                     .then(({data}) => {
                         this.paginatedBookData = data;
                     })
@@ -81,6 +132,25 @@
             },
             setSelectedBookData(book) {
                 this.selectedBook = book;
+            },
+            generateUrl(url) {
+                for (const key in this.filters) {
+                    var value = this.filters[key].toString().trim();
+                    if (value == '') continue;
+
+                    url = `${url}&${key}=${value}`;
+                }
+
+                return url;
+            },
+            clearFilters() {
+                this.filters = {
+                    authorId: '',
+                    genreId: '',
+                    isbn: '',
+                    dateFrom: '',
+                    dateTo: '',
+                };
             }
         }
     }
