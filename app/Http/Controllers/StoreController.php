@@ -14,7 +14,7 @@ class StoreController extends Controller
 
     public function searchBooks(Request $request)
     {
-        $books = Book::search($request->get('q'))->paginate(8);
+        $books = Book::search($request->get('query'))->paginate(8);
         return response()->json($books, 200);
     }
 }
