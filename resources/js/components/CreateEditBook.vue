@@ -120,11 +120,9 @@
 
 <script>
     import axios from "axios";
-    import BookDetails from "./BookDetails.vue";
 
     export default {
         props: ["book", "authors", "genres", "publishers"],
-        components: { "book-details": BookDetails },
         data() {
             return {
                 baseUrl: BASE_URL,

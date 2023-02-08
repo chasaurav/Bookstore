@@ -27,9 +27,11 @@ import Shop from './components/Shop.vue';
 import BookList from './components/BookList.vue';
 import CreateEditBook from './components/CreateEditBook.vue';
 import Toaster from './components/Toaster.vue';
+import BookDetails from "./components/BookDetails.vue";
 
 app.component('toaster', Toaster);
 app.component('book-list', BookList);
+app.component('book-details', BookDetails);
 app.component('create-edit-book', CreateEditBook);
 app.component('shop', Shop);
 app.mount('#app');
