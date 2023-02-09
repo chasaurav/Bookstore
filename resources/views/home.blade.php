@@ -18,7 +18,7 @@
             AlertModal(modalContext => {
                 modalContext.hide();
 
-                axios.delete(`${BASE_URL}/books/${id}`)
+                axios.delete(`${BASE_URL}/books/${id}/delete`)
                     .then(res => {
                         CustomEvent.fire('refresh-book-list');
                         showToast(TOAST_DEFAUT_SUCCESS_HEADER, "Book has been deleted successfully.",TOAST_SUCCESS);
