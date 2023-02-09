@@ -114,7 +114,7 @@
             debounceInput: _.debounce(function({target}) {
                 this.searchBooks(null, target.value.trim());
             }, 500),
-            searchBooks(url, searchParam) {
+            searchBooks(url, searchParam = '') {
                 this.appiInProgress = true;
                 const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${searchParam}&page=1`);
 
