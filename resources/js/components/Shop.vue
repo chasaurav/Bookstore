@@ -98,7 +98,6 @@
             return {
                 baseUrl: BASE_URL,
                 appiInProgress: false,
-                searchParam: '',
                 paginatedBookData: {},
                 selectedBook: null,
                 lastUsedAPI: '',
@@ -113,14 +112,11 @@
         },
         methods: {
             debounceInput: _.debounce(function({target}) {
-                if (this.appiInProgress || target.value.trim().length < 2) return;
-                this.searchParam = target.value.trim();
-
-                this.searchBooks(null);
+                this.searchBooks(null, target.value.trim());
             }, 500),
-            searchBooks(url) {
+            searchBooks(url, searchParam) {
                 this.appiInProgress = true;
-                const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${this.searchParam}&page=1`);
+                const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${searchParam}&page=1`);
 
                 axios.get(generatedUrl)
                     .then(({data}) => {
