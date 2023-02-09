@@ -20,7 +20,9 @@ class StoreController extends Controller
 
     public function searchBooks(Request $request)
     {
-        $query = Book::search($request->get('query'))->where('title', $request->get('query'));
+        $query = empty(trim($request->get('query')))
+            ? Book::search()
+            : Book::search($request->get('query'))->where('title', $request->get('query'));
 
         if ($request->has('authorId')) {
             $query->where('author_id', $request->get('authorId'));
@@ -33,9 +35,9 @@ class StoreController extends Controller
         if ($request->has('isbn')) {
             $query->where('isbn', $request->get('isbn'));
         }
-        
+
         if ($request->has('dateFrom') && $request->has('dateTo')) {
-            $query->query(function($query) use ($request) {
+            $query->query(function ($query) use ($request) {
                 $query->whereBetween('published', [$request->get('dateFrom'), $request->get('dateTo')]);
             });
         }

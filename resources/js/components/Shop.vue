@@ -4,32 +4,32 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>Author</label>
-                <select ref="author" class="form-select" v-model="filters.authorId">
+                <select ref="author" class="form-select" v-model="filters.authorId" @change="searchBooks(lastUsedAPI || null)">
                     <option value="">Select</option>
                     <option v-for="(author, i) in authors" :key="i" :value="author.id">{{author.name}}</option>
                 </select>
             </div>
             <div class="col-2">
                 <label>Genre</label>
-                <select ref="genre" class="form-select" v-model="filters.genreId">
+                <select ref="genre" class="form-select" v-model="filters.genreId" @change="searchBooks(lastUsedAPI || null)">
                     <option value="">Select</option>
                     <option v-for="(genre, i) in genres" :key="i" :value="genre.id">{{genre.name}}</option>
                 </select>
             </div>
             <div class="col-2">
                 <label>ISBN</label>
-                <select ref="isbn" class="form-select" v-model="filters.isbn">
+                <select ref="isbn" class="form-select" v-model="filters.isbn" @change="searchBooks(lastUsedAPI || null)">
                     <option value="">Select</option>
                     <option v-for="(isbn, i) in isbns" :key="i" :value="isbn.isbn">{{isbn.isbn}}</option>
                 </select>
             </div>
             <div class="col-2">
                 <label>Date From</label>
-                <input type="date" class="form-control" v-model="filters.dateFrom" />
+                <input type="date" class="form-control" v-model="filters.dateFrom" @change="searchBooks(lastUsedAPI || null)" />
             </div>
             <div class="col-2">
                 <label>Date To</label>
-                <input type="date" class="form-control" v-model="filters.dateTo" />
+                <input type="date" class="form-control" v-model="filters.dateTo" @change="searchBooks(lastUsedAPI || null)" />
             </div>
             <div class="col-1 d-flex align-items-end">
                 <button type="btn" class="btn btn-sm btn-link" @click="clearFilters">Clear All</button>
@@ -43,7 +43,7 @@
         <nav v-if="paginatedBookData.last_page > 1">
             <ul class="pagination pagination-lg justify-content-center">
                 <li v-for="(link, i) in paginatedBookData.links" :key="i" class="page-item" :class="!link.url ? 'disabled' : ''">
-                    <a class="page-link" :class="link.active ? 'active' : ''" @click="searchBooks(link.url)" href="#" v-html="link.label"></a>
+                    <a class="page-link" :class="link.active ? 'active' : ''" @click="searchBooks(link.url || null)" href="#" v-html="link.label"></a>
                 </li>
             </ul>
         </nav>
@@ -101,6 +101,7 @@
                 searchParam: '',
                 paginatedBookData: {},
                 selectedBook: null,
+                lastUsedAPI: '',
                 filters: {
                     authorId: '',
                     genreId: '',
@@ -113,14 +114,17 @@
         methods: {
             debounceInput: _.debounce(function({target}) {
                 if (this.appiInProgress || target.value.trim().length < 2) return;
-                this.searchBooks(null, target.value.trim());
+                this.searchParam = target.value.trim();
+
+                this.searchBooks(null);
             }, 500),
-            searchBooks(url, searchParam) {
+            searchBooks(url) {
                 this.appiInProgress = true;
-                const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${searchParam}&page=1`);
+                const generatedUrl = this.generateUrl(url || `${BASE_URL}/search?query=${this.searchParam}&page=1`);
 
                 axios.get(generatedUrl)
                     .then(({data}) => {
+                        this.lastUsedAPI = generatedUrl;
                         this.paginatedBookData = data;
                     })
                     .catch(({response}) => {
@@ -134,14 +138,19 @@
                 this.selectedBook = book;
             },
             generateUrl(url) {
+                var parsedURI = new URLSearchParams(url);
+
                 for (const key in this.filters) {
                     var value = this.filters[key].toString().trim();
-                    if (value == '') continue;
 
-                    url = `${url}&${key}=${value}`;
+                    if (value == '') {
+                        parsedURI.delete(key);
+                    } else {
+                        parsedURI.set(key, value);
+                    }
                 }
 
-                return url;
+                return `${BASE_URL}/search?${parsedURI.toString().split('search%3F')[1]}`;
             },
             clearFilters() {
                 this.filters = {
@@ -151,6 +160,8 @@
                     dateFrom: '',
                     dateTo: '',
                 };
+
+                this.searchBooks(this.lastUsedAPI || null);
             }
         }
     }
